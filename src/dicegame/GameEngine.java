@@ -10,10 +10,14 @@ import java.util.ArrayList;
 
 public class GameEngine 
 {
-//-Variables-//
+    // Variables
     public int guess1, guess2;
     public int guessSum = guess1+guess2;
     public double bet = 0;
+    public int die1;
+    public int die2;
+    private static int faceValue1;
+    private static int faceValue2;
 
 //public char exit = 'e'; //if bet 0, stop game and show history + game statistics
     public double score;
@@ -31,11 +35,22 @@ public class GameEngine
     ArrayList<Double> penaltyHist = new ArrayList<Double>();
     ArrayList<Integer> turnsHist = new ArrayList<Integer>();
     
+    public void intializeDies()
+    {
+        Die die1 = new Die();
+        Die die2 = new Die();
+        faceValue1 = die1.rollDie();
+        faceValue2 = die2.rollDie();
+        System.out.println(faceValue1);
+        System.out.println(faceValue2);
+    }
     
     
     
     public GameEngine()
     {
+        intializeDies();
+        /*
         //int guess1, guess2;
         System.out.println("Welcome to the dice betting game!");
         //int guess1;
