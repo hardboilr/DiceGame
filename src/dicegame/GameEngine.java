@@ -7,9 +7,141 @@
 package dicegame;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class GameEngine 
 {
+    //public int faceValue1;
+    
+    private Die die1 = new Die();
+    private Die die2 = new Die();
+    private int faceValue1;
+    private int faceValue2;
+    private int faceValueSum;
+    private int guess1;
+    private int guess2;
+    private int bet;
+    private Player player = new Player();
+    private String player1;
+    
+    
+    
+    public GameEngine() 
+    {
+        
+        //Welcome screen
+        System.out.println(" _____________________________________");
+        System.out.println("|                                     |");
+        System.out.println("| Welcome to the Dice Betting Game!   |");
+        System.out.println("|_____________________________________|");
+        
+        GameTurn Turn = new GameTurn();
+
+        // Input player name
+        Scanner input = new Scanner(System.in);
+        Player player1 = new Player();
+        
+//        game1.addGuessHistory(guess1);
+        System.out.println("Please enter your name: ");
+        String inputName = input.nextLine();
+        player1.setName(inputName);
+        player1.writeName();
+        delay();
+        clearScreen();
+        rollDie();
+        Guess();
+        Bet();
+        // Game history
+        
+        Turn.addFaceValue1History(faceValue1);
+        Turn.addFaceValue2History(faceValue2);
+        Turn.addGuess1History(guess1);
+        Turn.addGuess2History(guess2);
+        Turn.addBetHistory(bet);
+
+        System.out.println("FaceValue1 history: " + Turn.faceValue1Hist);
+        System.out.println("FaceValue2 history: " + Turn.faceValue2Hist);
+        System.out.println("Guess 1 history: " + Turn.guess1Hist);
+        System.out.println("Guess 2 history: " + Turn.guess2Hist);
+        System.out.println("Bet history: " + Turn.betHist);
+        
+    }
+    
+    public void rollDie()
+    {
+        die1.Random();
+        die2.Random();
+        this.faceValue1 = die1.getFaceValue();
+        this.faceValue2 = die2.getFaceValue();
+        faceValueSum = faceValue1+faceValue2;
+        System.out.println("The sum of the dies is: " + faceValueSum);
+        
+        // display faceValue1+2 for testing purposes
+        System.out.println("Die 1 is: " + faceValue1);
+        System.out.println("Die 2 is: " + faceValue2);
+    }
+    
+    public void Guess()
+    {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please input guess1: ");
+        guess1 = scan.nextInt();
+        System.out.println("Please input guess2: ");
+        guess2 = scan.nextInt();
+        System.out.println(guess1);
+        System.out.println(guess2);
+        
+        
+    }
+    
+    public void Bet()
+    {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please input bet: ");
+        bet = scan.nextInt();
+    }
+    
+    public void GameHistory()
+    {
+        
+        
+    }
+    
+    public void clearScreen()
+    {
+        char c = '\n';
+        int length = 50;
+        char[] chars = new char[length];
+        Arrays.fill(chars, c);
+        System.out.print(String.valueOf(chars));
+    }
+  
+    public void delay()
+    {
+        try
+        {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {}
+    }
+   
+    
+}
+
+
+    
+  
+    
+   
+    
+   
+    
+  
+
+    
+ 
+    
+    /*
     // Variables
     public int guess1, guess2;
     public int guessSum = guess1+guess2;
@@ -267,8 +399,8 @@ public class GameEngine
         
             
     }   
-       
-}
+ */      
+
     
 
 

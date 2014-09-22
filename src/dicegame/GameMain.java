@@ -21,7 +21,6 @@ public class GameMain
 
     public static void main(String[] args) 
     {
-        //GameTurn.gameHistory();
         GameEngine initialize = new GameEngine();
     }
     
