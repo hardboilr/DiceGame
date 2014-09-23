@@ -18,7 +18,8 @@ public class GameTurn
     // from one of the other lists, but convenient. :-)
     private ArrayList<Integer> turnHist = new ArrayList<>();
     
-    private ArrayList<Double> scoreHist = new ArrayList<>();
+    private ArrayList<Double> rewardHist = new ArrayList<>();
+    private ArrayList<Double> penaltyHist = new ArrayList<>();
     
     
     //------------------------------
@@ -90,12 +91,21 @@ public class GameTurn
     //--------------------------------
     // Score history accessor methods
     //--------------------------------
-    public void addScoreHistory (double input)
+    public void addRewardHistory (double input)
     {
-        this.scoreHist.add (input);
+        this.rewardHist.add (input);
     }
-    public double getScoreHistory (double input)
+    public double getRewardHistory (double input)
     {
-        return scoreHist.get ((int) input);
+        return rewardHist.get ((int) input);
+    }
+    
+    public void addPenaltyHistory (double input)
+    {
+        this.penaltyHist.add (input);
+    }
+    public double getPenaltyHistory (double input)
+    {
+        return penaltyHist.get ((int) input);
     }
 }

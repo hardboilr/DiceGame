@@ -30,6 +30,7 @@ public class GameEngine
     private int i;
     private double reward;
     private double penalty;
+    private double rewardSum;
     
     
     
@@ -60,6 +61,10 @@ public class GameEngine
             Bet();
             if (bet ==0) 
             {
+                Turn.addGuess1History(0);
+                Turn.addGuess2History(0);
+                Turn.addRewardHistory(0);
+                Turn.addPenaltyHistory(0);
                 break;  
             } 
             Guess();
@@ -67,35 +72,49 @@ public class GameEngine
         }
         gameEnded();
         displayHistory();
+        gameStatistics();
 
-        // Adding entries into Game History
-        Turn.addFaceValue1History(faceValue1);
-        Turn.addFaceValue2History(faceValue2);
-        Turn.addGuess1History(guess1);
-        Turn.addGuess2History(guess2);
-      
-        
     }
     
    
     public void displayHistory()
     {
-//        while (Turn.getTurnHistoryLength() == 0)
-//        {
-//            System.out.println("You suck!");
-//            break;
-//        }
-        for (int i = 0; i < Turn.getTurnHistoryLength()-1 ; i++) 
+        //System.out.println("Current history length is: " + Turn.getTurnHistoryLength());
+        while (Turn.getTurnHistoryLength() == 1)
+        {
+            System.out.println("No history to display");
+            System.exit(0);
+        }
+        for (int i = 0; i < Turn.getTurnHistoryLength() ; i++) 
         {
             System.out.println("------------------------------------------------");
             System.out.println("In round " + Turn.getTurnHistory(i) + " you betted " + Turn.getBetHistory(i) +" credits.");
             System.out.println("The dies rolled were " + Turn.getFaceValue1History(i) + " & " + Turn.getFaceValue2History(i) +
                                 " and you guessed " + Turn.getGuess1History(i) + " & " + Turn.getGuess2History(i) +"." );
-            System.out.println("Your reward was " + reward + " and your penalty was " + penalty);
+            System.out.println("Your reward was " + Turn.getRewardHistory(i) + " and your penalty was " + Turn.getPenaltyHistory(i));
             System.out.println("------------------------------------------------");
         }
-                
+    }
         
+    public void gameStatistics()
+    {
+       /*
+        The program must show the total number of game turns, the total amount of 
+rewards won and the final account total – after a game. 
+        */ 
+        
+        //sum game turns
+        System.out.println("The game lasted for: " + Turn.getTurnHistoryLength()+ " turns.");
+        //Sum rewards
+        for (int i = 0; i < Turn.getTurnHistoryLength() ; i++)
+        {
+            
+            rewardSum = rewardSum + Turn.getRewardHistory(i);
+            
+        }
+        System.out.println("The total reward sum was: " + rewardSum);
+        // final account total
+        System.out.println("The final account balance was: " + player1.getAccount());
     }
     
     public void rollDie()
@@ -211,35 +230,44 @@ public class GameEngine
             if (faceValueSum == 2 || faceValueSum == 3 || faceValueSum == 11 || faceValueSum == 12)
             {
                 reward = bet * 1.5;
+                penalty = 0;
                 System.out.println("You guessed correct and won " + reward + "!");
                 player1.setAccount(reward);
                 System.out.println("You account is now " + player1.getAccount());
-                Turn.addScoreHistory(reward);
+                Turn.addRewardHistory(reward);
+                Turn.addPenaltyHistory(penalty);
             }
             else if (faceValueSum == 4 || faceValueSum == 5 || faceValueSum == 9 || faceValueSum == 10)
             {
                 reward = bet * 2;
+                penalty = 0;
                 System.out.println("You guessed correct and won " + reward + "!");
                 player1.setAccount(reward);
                 System.out.println("You account is now " + player1.getAccount());
-                Turn.addScoreHistory(reward);
+                Turn.addRewardHistory(reward);
+                Turn.addPenaltyHistory(penalty);
             }
             else if (faceValueSum == 6 || faceValueSum == 7 || faceValueSum == 8)
             {
                 reward = bet * 3;
+                penalty = 0;
                 System.out.println("You guessed correct and won " + reward + "!");
                 player1.setAccount(reward);
                 System.out.println("You account is now " + player1.getAccount());
-                Turn.addScoreHistory(reward);
+                Turn.addRewardHistory(reward);
+                Turn.addPenaltyHistory(penalty);
             }
         }
         else //(guess1 != faceValue1 || guess2 != faceValue2)
         {
+            reward = 0;
             penalty = bet *-1;
-            player1.setAccount(penalty);
             System.out.println("You've guessed wrong!");
+            player1.setAccount(penalty);
             System.out.println(penalty + " has been deducted from your account."
                                  + " New account balance is: " + player1.getAccount());
+            Turn.addRewardHistory(reward);
+            Turn.addPenaltyHistory(penalty);
         }
     }
     
