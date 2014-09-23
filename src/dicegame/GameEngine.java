@@ -18,9 +18,10 @@ public class GameEngine
     private Die die2 = new Die();
     private int faceValue1;
     private int faceValue2;
-    private int faceValueSum;
+    private int faceValueSum = faceValue1+faceValue2;
     private int guess1;
     private int guess2;
+    private int guessSum = guess1+guess2;
     private int bet;
     private int round;
     private Player player = new Player();
@@ -52,11 +53,11 @@ public class GameEngine
         rollDie();
         Bet();
         Guess();
-        Turn.addTurnHistory(5);
-        Turn.addTurnHistory(10);
-        System.out.println(Turn.getTurnHistory(0));
-        System.out.println(Turn.getTurnHistory(1));
-        System.out.println(Turn.getTurnHistoryLength());
+//        Turn.addTurnHistory(5);
+//        Turn.addTurnHistory(10);
+//        System.out.println(Turn.getTurnHistory(0));
+//        System.out.println(Turn.getTurnHistory(1));
+//        System.out.println(Turn.getTurnHistoryLength());
         displayHistory();
 //        System.out.println(Turn.turnHistSize);
         
@@ -78,11 +79,14 @@ public class GameEngine
     public void displayHistory()
     {
         
-        for (int i = 0; i < Turn.getTurnHistoryLength()-1 ; i++) 
+        for (int i = 0; i < Turn.getTurnHistoryLength() ; i++) 
         {
-            //Turn.getBetHistory(i);
-//          System.out.println("In round " + round +" you betted " + i);
-            System.out.println("You betted: " + Turn.getBetHistory(i));
+            System.out.println("------------------------------------------------");
+            System.out.println("In round " + Turn.getTurnHistory(i) + " you betted " + Turn.getBetHistory(i) +" credits.");
+            System.out.println("The dies rolled were " + Turn.getFaceValue1History(i) + " & " + Turn.getFaceValue2History(i) +
+                                " and you guessed " + Turn.getGuess1History(i) + " & " + Turn.getGuess2History(i) +"." );
+            System.out.println("Your reward was NEED TO CODE THIS");
+            System.out.println("------------------------------------------------");
         }
                 
         
@@ -97,19 +101,69 @@ public class GameEngine
         faceValueSum = faceValue1+faceValue2;
         System.out.println("The sum of the dies is: " + faceValueSum);
         round++;
+        Turn.addTurnHistory(round);     
+        Turn.addFaceValue1History(faceValue1);
+        Turn.addFaceValue2History(faceValue2);
         // display faceValue1+2 for testing purposes
         System.out.println("Die 1 is: " + faceValue1);
         System.out.println("Die 2 is: " + faceValue2);
-//        Turn.addTurnHistory(round);
+        
     }
     
     public void Guess()
     {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Please input guess1: ");
-        guess1 = scan.nextInt();
-        System.out.println("Please input guess2: ");
-        guess2 = scan.nextInt();
+        
+        
+        
+        while (guessSum != faceValueSum)
+        {
+            do
+            {   
+                System.out.println("Please input guess1: ");
+                while (!scan.hasNextInt())
+                {
+                    System.out.println("Invalid input. Has to be a number");
+                    scan.next();
+                } 
+                guess1 = scan.nextInt();
+            } while (guess1 <= 0);
+
+            System.out.println("Thank you! You guessed: " + guess1);
+            System.out.println("");
+
+            do
+            {
+                System.out.println("Please input guess2: ");
+                while (!scan.hasNextInt())
+                {
+                    System.out.println("Invalid input. Has to be a number");
+                    scan.next();
+                }
+                guess2 = scan.nextInt();
+            } while (guess2 <=0);
+
+            System.out.println("Thank you! You guessed: " + guess2);
+            int guessSum = guess1+guess2;
+            if (guessSum != faceValueSum)
+            {
+                System.out.println("Your sum of guesses did not match the sum of face values."
+                + " Please try again.");
+            }
+            else if (guessSum == faceValueSum)
+            {
+                break;
+            }
+        } 
+        Turn.addGuess1History(guess1);
+        Turn.addGuess2History(guess2);
+//        guess1 = 0; // 'reset' guess1
+//        guess2 = 0; // 'reset' guess2
+        
+        // DELETE - testing purposes only
+        System.out.println("guess 2: " + guess1 + " was stored");
+        System.out.println("guess 2: " + guess2 + " was stored");
+        
     }
     
     public void Bet()
@@ -149,6 +203,7 @@ public class GameEngine
         System.out.print(String.valueOf(chars));
     }
   
+    /*
     public void delay()
     {
         try
@@ -156,6 +211,7 @@ public class GameEngine
             TimeUnit.SECONDS.sleep(3);
         } catch (InterruptedException e) {}
     }
+    */
 }
 
 
