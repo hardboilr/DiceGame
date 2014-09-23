@@ -14,18 +14,28 @@ public class GameTurn
     private final ArrayList<Integer> guess1Hist = new ArrayList<>();
     private final ArrayList<Integer> guess2Hist = new ArrayList<>();
     private final ArrayList<Integer> betHist = new ArrayList<>();
+    // kinda redundant because we can derive this number
+    // from one of the other lists, but convenient.
+    private final ArrayList<Integer> turnHist = new ArrayList<>(); 
     
     // Variables
     
-    
+    public void addTurnHistory (int input)
+    {
+        this.turnHist.add (input);
+    }
    
-    
-    
     public void addFaceValue1History(int input)
     {
        this.faceValue1Hist.add (input);
     }
       
+    public void getFaceValue1History(int i)
+    {
+        this.faceValue1Hist.get (i);
+        System.out.println(i);
+        
+    }
     public void addFaceValue2History(int input)
     {
        this.faceValue2Hist.add (input);
@@ -46,18 +56,9 @@ public class GameTurn
         this.betHist.add (input);
     }
     
-    public void displayHistory()
+    public void getBetHistory(int input)
     {
-        int step  = 1;
-        
-        for (int i = 0; i < turn; i++)
-        {
-            System.out.println("In turn: " + step + " you betted: " + betHist.get(i));
-            System.out.println("You guessed: " + die1Hist.get(i)+" and " + die2Hist.get(i));
-            System.out.println("Your reward was: " + rewardHist.get(i) +" and your penalty was: " + penaltyHist.get(i));
-            System.out.println("");
-            step++;
-        }
+        betHist.get (input);
+//        return input;
     }
-         
 }

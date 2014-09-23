@@ -22,9 +22,11 @@ public class GameEngine
     private int guess1;
     private int guess2;
     private int bet;
+    private int round = 1;
     private Player player = new Player();
     private String player1;
-    
+    private int i;
+    GameTurn Turn = new GameTurn();
     
     
     public GameEngine() 
@@ -36,13 +38,12 @@ public class GameEngine
         System.out.println("| Welcome to the Dice Betting Game!   |");
         System.out.println("|_____________________________________|");
         
-        GameTurn Turn = new GameTurn();
+        
 
         // Input player name
         Scanner input = new Scanner(System.in);
         Player player1 = new Player();
         
-//        game1.addGuessHistory(guess1);
         System.out.println("Please enter your name: ");
         String inputName = input.nextLine();
         player1.setName(inputName);
@@ -50,23 +51,64 @@ public class GameEngine
         delay();
         clearScreen();
         rollDie();
-        Guess();
+        Turn.addTurnHistory(round);
         Bet();
-        // Game history
+        Turn.addBetHistory(bet);
+        Guess();
         
+        displayHistory();
+        
+        // Adding entries into Game History
         Turn.addFaceValue1History(faceValue1);
         Turn.addFaceValue2History(faceValue2);
         Turn.addGuess1History(guess1);
         Turn.addGuess2History(guess2);
-        Turn.addBetHistory(bet);
+       
+        
 
-        System.out.println("FaceValue1 history: " + Turn.faceValue1Hist);
-        System.out.println("FaceValue2 history: " + Turn.faceValue2Hist);
-        System.out.println("Guess 1 history: " + Turn.guess1Hist);
-        System.out.println("Guess 2 history: " + Turn.guess2Hist);
-        System.out.println("Bet history: " + Turn.betHist);
+//         Displaying Game History
+        
+//        System.out.println("FaceValue1 history: " + Turn.getFaceValue1History());
+//        System.out.println("FaceValue2 history: " + Turn.faceValue2Hist);
+//        System.out.println("Guess 1 history: " + Turn.guess1Hist);
+//        System.out.println("Guess 2 history: " + Turn.guess2Hist);
+        /*
+        for (int i = 0; i < 10; i++)
+        {
+            //int item;
+            System.out.println("Test");
+//            System.out.println("You betted: " + Turn.getBetHistory(i));
+        }
+        System.out.println("You're and asshole!");
+//        return i; 
+//        System.out.println("Bet history: " + Turn.getBetHistory(0));
+        */
+      
         
     }
+    
+   
+    public void displayHistory()
+    {
+        
+        for (int i = 0; i < round; i++)
+        {
+//            int item;
+            Turn.getBetHistory(i);
+            System.out.println("In round " + round +"you betted " + i);
+            
+//            System.out.println("You betted: " + Turn.getBetHistory(i));
+        }
+        System.out.println("You're and asshole!");
+//        return i; 
+        
+                
+        
+    }
+    
+   
+    
+    
     
     public void rollDie()
     {
@@ -99,7 +141,18 @@ public class GameEngine
     {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please input bet: ");
-        bet = scan.nextInt();
+        scan.nextInt();
+        do
+        {
+            System.out.println("Please enter a positive number");
+            while (!scan.hasNextInt()) 
+            {
+                System.out.println("That's not a number. Try again: ");
+                scan.next();
+            }
+            bet = scan.nextInt();
+        } while (bet <= 0);
+        System.out.println("Thanks! You betted: " + bet);
     }
     
     public void GameHistory()
@@ -124,8 +177,6 @@ public class GameEngine
             TimeUnit.SECONDS.sleep(3);
         } catch (InterruptedException e) {}
     }
-   
-    
 }
 
 
