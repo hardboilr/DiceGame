@@ -24,7 +24,7 @@ public class Player
         return playerName;
     }
     
-    public void writeName()
+    public void initializeName()
     {
         System.out.println("You start with: " + account + " credits on your account. ");
         System.out.println("Enjoy the game " + getName() + "!"); 

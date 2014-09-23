@@ -22,7 +22,7 @@ public class GameEngine
     private int guess1;
     private int guess2;
     private int bet;
-    private int round = 1;
+    private int round;
     private Player player = new Player();
     private String player1;
     private int i;
@@ -47,42 +47,29 @@ public class GameEngine
         System.out.println("Please enter your name: ");
         String inputName = input.nextLine();
         player1.setName(inputName);
-        player1.writeName();
-        delay();
-        clearScreen();
+        player1.initializeName();
+        lineJump();
         rollDie();
-        Turn.addTurnHistory(round);
         Bet();
-        Turn.addBetHistory(bet);
         Guess();
-        
+        Turn.addTurnHistory(5);
+        Turn.addTurnHistory(10);
+        System.out.println(Turn.getTurnHistory(0));
+        System.out.println(Turn.getTurnHistory(1));
+        System.out.println(Turn.getTurnHistoryLength());
         displayHistory();
+//        System.out.println(Turn.turnHistSize);
         
+//        int k = 0;
+//        
+//        Turn.getBetHistory(k);
+//        System.out.println(Turn.getBetHistory(k));
+
         // Adding entries into Game History
         Turn.addFaceValue1History(faceValue1);
         Turn.addFaceValue2History(faceValue2);
         Turn.addGuess1History(guess1);
         Turn.addGuess2History(guess2);
-       
-        
-
-//         Displaying Game History
-        
-//        System.out.println("FaceValue1 history: " + Turn.getFaceValue1History());
-//        System.out.println("FaceValue2 history: " + Turn.faceValue2Hist);
-//        System.out.println("Guess 1 history: " + Turn.guess1Hist);
-//        System.out.println("Guess 2 history: " + Turn.guess2Hist);
-        /*
-        for (int i = 0; i < 10; i++)
-        {
-            //int item;
-            System.out.println("Test");
-//            System.out.println("You betted: " + Turn.getBetHistory(i));
-        }
-        System.out.println("You're and asshole!");
-//        return i; 
-//        System.out.println("Bet history: " + Turn.getBetHistory(0));
-        */
       
         
     }
@@ -91,24 +78,15 @@ public class GameEngine
     public void displayHistory()
     {
         
-        for (int i = 0; i < round; i++)
+        for (int i = 0; i < Turn.getTurnHistoryLength()-1 ; i++) 
         {
-//            int item;
-            Turn.getBetHistory(i);
-            System.out.println("In round " + round +"you betted " + i);
-            
-//            System.out.println("You betted: " + Turn.getBetHistory(i));
+            //Turn.getBetHistory(i);
+//          System.out.println("In round " + round +" you betted " + i);
+            System.out.println("You betted: " + Turn.getBetHistory(i));
         }
-        System.out.println("You're and asshole!");
-//        return i; 
-        
                 
         
     }
-    
-   
-    
-    
     
     public void rollDie()
     {
@@ -118,10 +96,11 @@ public class GameEngine
         this.faceValue2 = die2.getFaceValue();
         faceValueSum = faceValue1+faceValue2;
         System.out.println("The sum of the dies is: " + faceValueSum);
-        
+        round++;
         // display faceValue1+2 for testing purposes
         System.out.println("Die 1 is: " + faceValue1);
         System.out.println("Die 2 is: " + faceValue2);
+//        Turn.addTurnHistory(round);
     }
     
     public void Guess()
@@ -131,40 +110,40 @@ public class GameEngine
         guess1 = scan.nextInt();
         System.out.println("Please input guess2: ");
         guess2 = scan.nextInt();
-        System.out.println(guess1);
-        System.out.println(guess2);
-        
-        
     }
     
     public void Bet()
     {
+        //------------------------------------------------------------
+        // Creates and object of the Scanner class.
+        // Asks user to input bet. Bet is default 0;  
+        // Then do: Ask for input. If not integer, try again
+        // If negative integer do again. 
+        // When positive integer inputted, do loop breaks.
+        // Thanks message and bet is added to history. 
+        // bet is set back to 0;, so we can start over in next turn.
+        //------------------------------------------------------------
         Scanner scan = new Scanner(System.in);
-        System.out.println("Please input bet: ");
-        scan.nextInt();
-        do
+        do 
         {
-            System.out.println("Please enter a positive number");
-            while (!scan.hasNextInt()) 
+            System.out.println("Please make a positive bet: ");
+            while (!scan.hasNextInt())
             {
-                System.out.println("That's not a number. Try again: ");
-                scan.next();
+                System.out.println("Invalid input. Has to be a number");
+                scan.next(); // this is important!
             }
             bet = scan.nextInt();
         } while (bet <= 0);
-        System.out.println("Thanks! You betted: " + bet);
+        
+        System.out.println("Thank you! You betted: " + bet);
+        System.out.println("");
+        Turn.addBetHistory(bet);
     }
     
-    public void GameHistory()
-    {
-        
-        
-    }
-    
-    public void clearScreen()
+    public void lineJump()
     {
         char c = '\n';
-        int length = 50;
+        int length = 1;
         char[] chars = new char[length];
         Arrays.fill(chars, c);
         System.out.print(String.valueOf(chars));
