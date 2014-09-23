@@ -15,8 +15,10 @@ public class GameTurn
     private ArrayList<Integer> guess2Hist = new ArrayList<>();
     private ArrayList<Integer> betHist = new ArrayList<>();
     // kinda redundant because we can derive this number
-    // from one of the other lists, but convenient.
-    private ArrayList<Integer> turnHist = new ArrayList<>(); 
+    // from one of the other lists, but convenient. :-)
+    private ArrayList<Integer> turnHist = new ArrayList<>();
+    
+    private ArrayList<Double> scoreHist = new ArrayList<>();
     
     
     //------------------------------
@@ -80,9 +82,20 @@ public class GameTurn
     {
         this.betHist.add (input);
     }
-    
     public int getBetHistory (int input)
     {
-        return betHist.get(input);
+        return betHist.get (input);
+    }
+    
+    //--------------------------------
+    // Score history accessor methods
+    //--------------------------------
+    public void addScoreHistory (double input)
+    {
+        this.scoreHist.add (input);
+    }
+    public double getScoreHistory (double input)
+    {
+        return scoreHist.get ((int) input);
     }
 }

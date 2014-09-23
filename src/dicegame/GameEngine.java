@@ -16,6 +16,8 @@ public class GameEngine
     
     private Die die1 = new Die();
     private Die die2 = new Die();
+    GameTurn Turn = new GameTurn();
+    Player player1 = new Player();
     private int faceValue1;
     private int faceValue2;
     private int faceValueSum = faceValue1+faceValue2;
@@ -24,10 +26,11 @@ public class GameEngine
     private int guessSum = guess1+guess2;
     private int bet;
     private int round;
-    private Player player = new Player();
-    private String player1;
+    //private String player1;
     private int i;
-    GameTurn Turn = new GameTurn();
+    private double reward;
+    private double penalty;
+    
     
     
     public GameEngine() 
@@ -43,28 +46,27 @@ public class GameEngine
 
         // Input player name
         Scanner input = new Scanner(System.in);
-        Player player1 = new Player();
+        //Player player1 = new Player();
         
         System.out.println("Please enter your name: ");
         String inputName = input.nextLine();
         player1.setName(inputName);
+        lineJump();
         player1.initializeName();
         lineJump();
-        rollDie();
-        Bet();
-        Guess();
-//        Turn.addTurnHistory(5);
-//        Turn.addTurnHistory(10);
-//        System.out.println(Turn.getTurnHistory(0));
-//        System.out.println(Turn.getTurnHistory(1));
-//        System.out.println(Turn.getTurnHistoryLength());
+        while (player1.getAccount() > 0)
+        {
+            rollDie();
+            Bet();
+            if (bet ==0) 
+            {
+                break;  
+            } 
+            Guess();
+            scoring();
+        }
+        gameEnded();
         displayHistory();
-//        System.out.println(Turn.turnHistSize);
-        
-//        int k = 0;
-//        
-//        Turn.getBetHistory(k);
-//        System.out.println(Turn.getBetHistory(k));
 
         // Adding entries into Game History
         Turn.addFaceValue1History(faceValue1);
@@ -78,14 +80,18 @@ public class GameEngine
    
     public void displayHistory()
     {
-        
-        for (int i = 0; i < Turn.getTurnHistoryLength() ; i++) 
+//        while (Turn.getTurnHistoryLength() == 0)
+//        {
+//            System.out.println("You suck!");
+//            break;
+//        }
+        for (int i = 0; i < Turn.getTurnHistoryLength()-1 ; i++) 
         {
             System.out.println("------------------------------------------------");
             System.out.println("In round " + Turn.getTurnHistory(i) + " you betted " + Turn.getBetHistory(i) +" credits.");
             System.out.println("The dies rolled were " + Turn.getFaceValue1History(i) + " & " + Turn.getFaceValue2History(i) +
                                 " and you guessed " + Turn.getGuess1History(i) + " & " + Turn.getGuess2History(i) +"." );
-            System.out.println("Your reward was NEED TO CODE THIS");
+            System.out.println("Your reward was " + reward + " and your penalty was " + penalty);
             System.out.println("------------------------------------------------");
         }
                 
@@ -187,17 +193,80 @@ public class GameEngine
                 scan.next(); // this is important!
             }
             bet = scan.nextInt();
-        } while (bet <= 0);
-        
+        } while (bet < 0);
+        while (bet > player1.getAccount())
+        {
+            System.out.println("Your bet exceeded your account balance. Please make a new bet.");
+            bet = scan.nextInt();
+        }
         System.out.println("Thank you! You betted: " + bet);
         System.out.println("");
         Turn.addBetHistory(bet);
     }
     
+    public void scoring()
+    {
+        if (guess1 == faceValue1 || guess2 == faceValue1)
+        {
+            if (faceValueSum == 2 || faceValueSum == 3 || faceValueSum == 11 || faceValueSum == 12)
+            {
+                reward = bet * 1.5;
+                System.out.println("You guessed correct and won " + reward + "!");
+                player1.setAccount(reward);
+                System.out.println("You account is now " + player1.getAccount());
+                Turn.addScoreHistory(reward);
+            }
+            else if (faceValueSum == 4 || faceValueSum == 5 || faceValueSum == 9 || faceValueSum == 10)
+            {
+                reward = bet * 2;
+                System.out.println("You guessed correct and won " + reward + "!");
+                player1.setAccount(reward);
+                System.out.println("You account is now " + player1.getAccount());
+                Turn.addScoreHistory(reward);
+            }
+            else if (faceValueSum == 6 || faceValueSum == 7 || faceValueSum == 8)
+            {
+                reward = bet * 3;
+                System.out.println("You guessed correct and won " + reward + "!");
+                player1.setAccount(reward);
+                System.out.println("You account is now " + player1.getAccount());
+                Turn.addScoreHistory(reward);
+            }
+        }
+        else //(guess1 != faceValue1 || guess2 != faceValue2)
+        {
+            penalty = bet *-1;
+            player1.setAccount(penalty);
+            System.out.println("You've guessed wrong!");
+            System.out.println(penalty + " has been deducted from your account."
+                                 + " New account balance is: " + player1.getAccount());
+        }
+    }
+    
+    public void gameEnded()
+    {
+        if (player1.getAccount() ==0)
+        {
+            System.out.println("The game has now ended because your account is empty");
+        }
+        else if (bet == 0) 
+        {
+            System.out.println("The game was terminated");
+        }
+        else 
+        {
+            System.out.println("The game has ended because your account became negative");   
+        }
+    }
+    
+    
+    //-----------------
+    // Utility methods
+    //-----------------
     public void lineJump()
     {
         char c = '\n';
-        int length = 1;
+        int length = 3;
         char[] chars = new char[length];
         Arrays.fill(chars, c);
         System.out.print(String.valueOf(chars));
