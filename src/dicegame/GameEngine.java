@@ -183,7 +183,7 @@ public class GameEngine
             int guessSum = guess1+guess2;
             if (guessSum != faceValueSum)
             {
-                System.out.println("Your sum of guesses did not match the sum of face values."
+                System.out.println("Your sum of guesses did not match the sum of the face values."
                 + " Please try again.");
             }
             else if (guessSum == faceValueSum)

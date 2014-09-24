@@ -77,6 +77,7 @@ public class Player
     public void initializeName()
     {
         System.out.println(getName() + " you start with: " + account + " credits on your account. ");
+        System.out.println("Bet 0 to end the game");
         System.out.println("Enjoy the game!"); 
     }
 }
