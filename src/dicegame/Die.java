@@ -27,7 +27,7 @@ public class Die
     
     public int getFaceValue()
     {
-    return this.faceValue;   
+        return this.faceValue;
     }
             
     

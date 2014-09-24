@@ -1,23 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * My game engine responsible for everything! YEEES!.
  */
 
 package dicegame;
 import java.util.Scanner;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
+//import java.util.concurrent.TimeUnit;
 
 public class GameEngine 
 {
-    //public int faceValue1;
-    
-    private Die die1 = new Die();
-    private Die die2 = new Die();
+    //-----------------------------------------------
+    // Create our class objects 
+    //(I can make them private but not sure it makes 
+    //(sense to do it in this particular project.
+    //-----------------------------------------------
+    Die die1 = new Die();
+    Die die2 = new Die();
     GameTurn Turn = new GameTurn();
     Player player1 = new Player();
+    
     private int faceValue1;
     private int faceValue2;
     private int faceValueSum = faceValue1+faceValue2;
@@ -27,31 +29,27 @@ public class GameEngine
     private int bet;
     private int round;
     //private String player1;
-    private int i;
+    //private int i;
     private double reward;
     private double penalty;
     private double rewardSum;
-    
-    
+    private double penaltySum;
     
     public GameEngine() 
     {
-        
-        //Welcome screen
+        // Welcome screen
         System.out.println(" _____________________________________");
         System.out.println("|                                     |");
         System.out.println("| Welcome to the Dice Betting Game!   |");
         System.out.println("|_____________________________________|");
-        
-        
 
         // Input player name
         Scanner input = new Scanner(System.in);
-        //Player player1 = new Player();
-        
         System.out.println("Please enter your name: ");
         String inputName = input.nextLine();
         player1.setName(inputName);
+        
+        // Now run the logic for the game rounds
         lineJump();
         player1.initializeName();
         lineJump();
@@ -73,7 +71,6 @@ public class GameEngine
         gameEnded();
         displayHistory();
         gameStatistics();
-
     }
     
    
@@ -100,7 +97,7 @@ public class GameEngine
     {
        /*
         The program must show the total number of game turns, the total amount of 
-rewards won and the final account total – after a game. 
+        rewards won and the final account total – after a game. 
         */ 
         
         //sum game turns
@@ -108,12 +105,11 @@ rewards won and the final account total – after a game.
         //Sum rewards
         for (int i = 0; i < Turn.getTurnHistoryLength() ; i++)
         {
-            
             rewardSum = rewardSum + Turn.getRewardHistory(i);
-            
+            penaltySum = penaltySum + Turn.getPenaltyHistory(i);
         }
         System.out.println("The total reward sum was: " + rewardSum);
-        // final account total
+        System.out.println("The total penalty sum was: " + penaltySum);
         System.out.println("The final account balance was: " + player1.getAccount());
     }
     
@@ -132,7 +128,6 @@ rewards won and the final account total – after a game.
         // display faceValue1+2 for testing purposes
         System.out.println("Die 1 is: " + faceValue1);
         System.out.println("Die 2 is: " + faceValue2);
-        
     }
     
     public void Guess()
@@ -229,7 +224,7 @@ rewards won and the final account total – after a game.
         {
             if (faceValueSum == 2 || faceValueSum == 3 || faceValueSum == 11 || faceValueSum == 12)
             {
-                reward = bet * 1.5;
+                reward = bet * player1.getMultiplier1();
                 penalty = 0;
                 System.out.println("You guessed correct and won " + reward + "!");
                 player1.setAccount(reward);
@@ -239,7 +234,7 @@ rewards won and the final account total – after a game.
             }
             else if (faceValueSum == 4 || faceValueSum == 5 || faceValueSum == 9 || faceValueSum == 10)
             {
-                reward = bet * 2;
+                reward = bet * player1.getMultiplier2();
                 penalty = 0;
                 System.out.println("You guessed correct and won " + reward + "!");
                 player1.setAccount(reward);
@@ -249,7 +244,7 @@ rewards won and the final account total – after a game.
             }
             else if (faceValueSum == 6 || faceValueSum == 7 || faceValueSum == 8)
             {
-                reward = bet * 3;
+                reward = bet * player1.getMultiplier3();
                 penalty = 0;
                 System.out.println("You guessed correct and won " + reward + "!");
                 player1.setAccount(reward);
@@ -294,7 +289,7 @@ rewards won and the final account total – after a game.
     public void lineJump()
     {
         char c = '\n';
-        int length = 3;
+        int length = 1;
         char[] chars = new char[length];
         Arrays.fill(chars, c);
         System.out.print(String.valueOf(chars));
