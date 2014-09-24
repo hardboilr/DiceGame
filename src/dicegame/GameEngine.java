@@ -1,23 +1,23 @@
 /*
- * My game engine responsible for everything! YEEES!.
+ * This is where the magic happens!
+ *
+ * created by Tobias Jacobsen aka hardboilr
  */
 
 package dicegame;
 import java.util.Scanner;
-//import java.util.ArrayList;
 import java.util.Arrays;
-//import java.util.concurrent.TimeUnit;
 
 public class GameEngine 
 {
     //-----------------------------------------------
     // Create our class objects 
-    //(I can make them private but not sure it makes 
+    //(I can make these private but not sure it makes 
     //(sense to do it in this particular project.
     //-----------------------------------------------
     Die die1 = new Die();
     Die die2 = new Die();
-    GameTurn Turn = new GameTurn();
+    GameTurn Turn = new GameTurn(); //too lazy to change Turn to turn. Sorry :-)
     Player player1 = new Player();
     
     private int faceValue1;
@@ -26,10 +26,8 @@ public class GameEngine
     private int guess1;
     private int guess2;
     private int guessSum = guess1+guess2;
-    private int bet;
+    private double bet;
     private int round;
-    //private String player1;
-    //private int i;
     private double reward;
     private double penalty;
     private double rewardSum;
@@ -59,6 +57,8 @@ public class GameEngine
             Bet();
             if (bet ==0) 
             {
+                // this is needed to make sure that we can display the
+                // full history when history method is called
                 Turn.addGuess1History(0);
                 Turn.addGuess2History(0);
                 Turn.addRewardHistory(0);
@@ -68,12 +68,13 @@ public class GameEngine
             Guess();
             scoring();
         }
+        // when account is depleted to 0 or user choose to bet 0
+        // we display a service message and run the history+statistics.
         gameEnded();
         displayHistory();
         gameStatistics();
     }
     
-   
     public void displayHistory()
     {
         //System.out.println("Current history length is: " + Turn.getTurnHistoryLength());
@@ -95,19 +96,17 @@ public class GameEngine
         
     public void gameStatistics()
     {
-       /*
-        The program must show the total number of game turns, the total amount of 
-        rewards won and the final account total – after a game. 
-        */ 
-        
-        //sum game turns
-        System.out.println("The game lasted for: " + Turn.getTurnHistoryLength()+ " turns.");
-        //Sum rewards
+//---------------------------
+// Method for game statistics.
+// First run a for-loop to sum rewards and penalities.
+// then print out the stuff. 
+//---------------------- 
         for (int i = 0; i < Turn.getTurnHistoryLength() ; i++)
         {
             rewardSum = rewardSum + Turn.getRewardHistory(i);
             penaltySum = penaltySum + Turn.getPenaltyHistory(i);
         }
+        System.out.println("The game lasted for: " + Turn.getTurnHistoryLength()+ " turns.");
         System.out.println("The total reward sum was: " + rewardSum);
         System.out.println("The total penalty sum was: " + penaltySum);
         System.out.println("The final account balance was: " + player1.getAccount());
@@ -115,27 +114,44 @@ public class GameEngine
     
     public void rollDie()
     {
+//---------------------------------
+// method for rolling the two dies 
+//---------------------------------
         die1.Random();
         die2.Random();
+        
+        // need to get create a readout of the values created on each die
+        // from the Random above, so we can calculate the sum. This is because
+        // we have yet to store them in the arrayList.
+        // and we are too lazy to later sum them from the arraylist. :-)  
         this.faceValue1 = die1.getFaceValue();
         this.faceValue2 = die2.getFaceValue();
         faceValueSum = faceValue1+faceValue2;
         System.out.println("The sum of the dies is: " + faceValueSum);
+        
+        // then we make sure to add 1 to around and add our relevant data
+        // to the arrayList for later usage.
         round++;
         Turn.addTurnHistory(round);     
         Turn.addFaceValue1History(faceValue1);
         Turn.addFaceValue2History(faceValue2);
+        
+        // <<<TESTING>>>
         // display faceValue1+2 for testing purposes
-        System.out.println("Die 1 is: " + faceValue1);
-        System.out.println("Die 2 is: " + faceValue2);
+        //System.out.println("Die 1 is: " + faceValue1);
+        //System.out.println("Die 2 is: " + faceValue2);
     }
     
     public void Guess()
     {
+//---------------------------------------------------------------------
+// method for receiving and validating user input. 
+// first run a while-loop while guessSum is not equal to faceValuesum. 
+// Inside make sure that input is positive and its a number. 
+// when guessSum == faceValueSum we break the loop.
+// also make sure to add the guesses to the Arraylist.
+//---------------------------------------------------------------------
         Scanner scan = new Scanner(System.in);
-        
-        
-        
         while (guessSum != faceValueSum)
         {
             do
@@ -177,49 +193,52 @@ public class GameEngine
         } 
         Turn.addGuess1History(guess1);
         Turn.addGuess2History(guess2);
-//        guess1 = 0; // 'reset' guess1
-//        guess2 = 0; // 'reset' guess2
         
-        // DELETE - testing purposes only
-        System.out.println("guess 2: " + guess1 + " was stored");
-        System.out.println("guess 2: " + guess2 + " was stored");
-        
+        // <<TESTING>> - testing purposes only
+        //System.out.println("guess 2: " + guess1 + " was stored");
+        //System.out.println("guess 2: " + guess2 + " was stored");
     }
     
     public void Bet()
     {
-        //------------------------------------------------------------
-        // Creates and object of the Scanner class.
-        // Asks user to input bet. Bet is default 0;  
-        // Then do: Ask for input. If not integer, try again
-        // If negative integer do again. 
-        // When positive integer inputted, do loop breaks.
-        // Thanks message and bet is added to history. 
-        // bet is set back to 0;, so we can start over in next turn.
-        //------------------------------------------------------------
+//---------------------------------------------
+// Same validation process as guess method.
+// Asks user to input bet. Bet is default 0;  
+// also checks if bet exceeds account balance.
+// Thanks message and bet is added to history. 
+// !!! ON A DANISH KEYBOARD YOU INPUT DOUBLE LIKE 25,5 AND NOT 25.5 !!!
+//---------------------------------------------
         Scanner scan = new Scanner(System.in);
         do 
         {
             System.out.println("Please make a positive bet: ");
-            while (!scan.hasNextInt())
+            while (!scan.hasNextDouble())
             {
-                System.out.println("Invalid input. Has to be a number");
+                System.out.println("Invalid input. Has to be a positive number");
                 scan.next(); // this is important!
             }
-            bet = scan.nextInt();
+            bet = scan.nextDouble();
         } while (bet < 0);
         while (bet > player1.getAccount())
         {
             System.out.println("Your bet exceeded your account balance. Please make a new bet.");
-            bet = scan.nextInt();
+            bet = scan.nextDouble();
         }
-        System.out.println("Thank you! You betted: " + bet);
+        System.out.println("Thank you! You betted " + bet);
         System.out.println("");
         Turn.addBetHistory(bet);
     }
     
     public void scoring()
     {
+//-------------------------------------------------------------------
+// method responsible for calculating the correct score based on the 
+// reward multiplier from the player object. Also calculate penalty.
+// in all cases add entries to both Arraylists: reward and penalty, 
+// to make sure that the length of the arrayLists are equal. 
+// we need this for displaying the history correctly
+//-------------------------------------------------------------------
+        
         if (guess1 == faceValue1 || guess2 == faceValue1)
         {
             if (faceValueSum == 2 || faceValueSum == 3 || faceValueSum == 11 || faceValueSum == 12)
@@ -229,6 +248,7 @@ public class GameEngine
                 System.out.println("You guessed correct and won " + reward + "!");
                 player1.setAccount(reward);
                 System.out.println("You account is now " + player1.getAccount());
+                lineJump();
                 Turn.addRewardHistory(reward);
                 Turn.addPenaltyHistory(penalty);
             }
@@ -239,6 +259,7 @@ public class GameEngine
                 System.out.println("You guessed correct and won " + reward + "!");
                 player1.setAccount(reward);
                 System.out.println("You account is now " + player1.getAccount());
+                lineJump();
                 Turn.addRewardHistory(reward);
                 Turn.addPenaltyHistory(penalty);
             }
@@ -248,19 +269,21 @@ public class GameEngine
                 penalty = 0;
                 System.out.println("You guessed correct and won " + reward + "!");
                 player1.setAccount(reward);
-                System.out.println("You account is now " + player1.getAccount());
+                System.out.println("New account balance is: " + player1.getAccount());
+                lineJump();
                 Turn.addRewardHistory(reward);
                 Turn.addPenaltyHistory(penalty);
             }
         }
-        else //(guess1 != faceValue1 || guess2 != faceValue2)
+        else 
         {
             reward = 0;
             penalty = bet *-1;
             System.out.println("You've guessed wrong!");
             player1.setAccount(penalty);
             System.out.println(penalty + " has been deducted from your account."
-                                 + " New account balance is: " + player1.getAccount());
+                           + " New account balance is: " + player1.getAccount());
+            lineJump();
             Turn.addRewardHistory(reward);
             Turn.addPenaltyHistory(penalty);
         }
@@ -268,6 +291,12 @@ public class GameEngine
     
     public void gameEnded()
     {
+//---------------------------------------------------------------
+// method for printing some feedback to the user when game over.
+// for the fun of it, add a custom message when player ends
+// the game prematurely.
+//---------------------------------------------------------------
+        
         if (player1.getAccount() ==0)
         {
             System.out.println("The game has now ended because your account is empty");
@@ -278,307 +307,21 @@ public class GameEngine
         }
         else 
         {
+            // Don't think this case is possible, but whatevaar!
             System.out.println("The game has ended because your account became negative");   
         }
     }
-    
-    
-    //-----------------
-    // Utility methods
-    //-----------------
+   
     public void lineJump()
     {
+//---------------------------------------------
+// Utility method to create some space between 
+// the various methods that have print output.
+//---------------------------------------------
         char c = '\n';
         int length = 1;
         char[] chars = new char[length];
         Arrays.fill(chars, c);
         System.out.print(String.valueOf(chars));
     }
-  
-    /*
-    public void delay()
-    {
-        try
-        {
-            TimeUnit.SECONDS.sleep(3);
-        } catch (InterruptedException e) {}
-    }
-    */
 }
-
-
-    
-  
-    
-   
-    
-   
-    
-  
-
-    
- 
-    
-    /*
-    // Variables
-    public int guess1, guess2;
-    public int guessSum = guess1+guess2;
-    public double bet = 0;
-    public int die1;
-    public int die2;
-    private static int faceValue1;
-    private static int faceValue2;
-
-//public char exit = 'e'; //if bet 0, stop game and show history + game statistics
-    public double score;
-    public double reward;
-    public double penalty;
-    public int turn;
-    
-//-Array lists-//
-    ArrayList<Integer> die1Hist = new ArrayList<Integer>();
-    ArrayList<Integer> die2Hist = new ArrayList<Integer>();
-    ArrayList<Integer> guess1Hist = new ArrayList<Integer>();
-    ArrayList<Integer> guess2Hist = new ArrayList<Integer>();
-    ArrayList<Double> betHist = new ArrayList<Double>();
-    ArrayList<Double> rewardHist = new ArrayList<Double>();
-    ArrayList<Double> penaltyHist = new ArrayList<Double>();
-    ArrayList<Integer> turnsHist = new ArrayList<Integer>();
-    
-    public void intializeDies()
-    {
-        Die die1 = new Die();
-        Die die2 = new Die();
-        faceValue1 = die1.rollDie();
-        faceValue2 = die2.rollDie();
-        System.out.println(faceValue1);
-        System.out.println(faceValue2);
-    }
-    
-    
-    
-    public GameEngine()
-    {
-        intializeDies();
-        /*
-        //int guess1, guess2;
-        System.out.println("Welcome to the dice betting game!");
-        //int guess1;
-        Scanner scan = new Scanner(System.in); // Initialize the scanner so we can use keyboard-input
-                
-        while (Player.credits > 0)
-        {
-            Die start = new Die(); //Initiate the die construct
-            System.out.println("Please place a bet: ");
-            bet = scan.nextInt();
-            
-            // ------------------------------------------------------
-            // Logic for testing if bet is above credit amount
-
-            while (bet > Player.credits)
-            {
-                System.out.println("Your bet exceeded your balance");
-                System.out.println("Please place a new bet: ");
-                bet = scan.nextInt();   
-            }
-            
-            if (bet == 0)
-            {
-                //Stop the game and show statistics + history
-                break;
-            }
-
-            System.out.println("Bet accepted");                
-            //--------------------------------------------------------
-
-            do 
-            {
-                System.out.println("Please input guess 1: ");
-                guess1 = scan.nextInt(); // stores input1 to var guess1
-                guessSum = guess1;
-                System.out.println("GuessSum is " + guessSum);
-
-                while (guess1 > 6 || guess1 < 1 || guess1 > Die.dieSum)
-                {
-                    if (guess1 > Die.dieSum)
-                    {
-                        guess1 = 0;
-                        System.out.println("Your sum of guess 1 exceeded the sum of dies. Please try again");
-                        System.out.println("Please input guess 1: ");
-                        guess1 = scan.nextInt();
-                        guessSum = guess1;
-                    }
-                    else 
-                    {
-                        guess1 = 0;
-                        System.out.println("Invalid input. Please try again");
-                        System.out.println("Please input guess 1: ");
-                        guess1 = scan.nextInt();
-                        guessSum = guess1;
-                    }
-                }
-
-                System.out.println("Please input guess 2: ");
-                guess2 = scan.nextInt(); // stores input2 to var guess2
-                guessSum = guess1+guess2;
-
-                while (guess2 > 6 || guess2 < 1 || guessSum > Die.dieSum || guessSum < Die.dieSum)
-                {
-                    if (guessSum > Die.dieSum)
-                    {
-                        guess2 = 0;
-                        System.out.println("Your sum of guesses exceeded the sum of dies. Please try again");
-                        System.out.println("Please input guess 2: ");
-                        guess2 = scan.nextInt();
-                        guessSum = guess1+guess2;
-                    }
-                    else if (guessSum < Die.dieSum)
-                    {
-                        guess2 = 0;
-                        System.out.println("Your sum of guess did not meet the sume of dies. Please try again");
-                        System.out.println("Please input guess 2: ");
-                        guess2 = scan.nextInt();
-                        guessSum = guess1+guess2;
-                    }
-                    else 
-                    {
-                        guess2 = 0;
-                        System.out.println("Invalid input. Please try again");
-                        System.out.println("Please input guess2: ");
-                        guess2 = scan.nextInt();
-                        guessSum = guess1+guess2;
-                    }
-
-                }
-            }
-            while (guessSum != Die.dieSum);
-
-            // Logic for scoring
-            if (Die.dieSum == 2 || Die.dieSum == 3 || Die.dieSum == 11 || Die.dieSum == 12)
-            {
-                score = bet * 1.5;
-            }
-            else if (Die.dieSum == 4 || Die.dieSum == 5 || Die.dieSum == 9 || Die.dieSum == 10)
-            {
-                score = bet * 2; 
-            }
-            else if (Die.dieSum == 6 || Die.dieSum == 7 || Die.dieSum == 8)
-            {
-                score = bet * 3;
-            }
-
-            //Logic for testing the guess against the roll
-
-            if (guess1 == Die.die1 || guess2 == Die.die1)
-            {
-                reward = score;
-                Player.credits = Player.credits + reward;
-                System.out.println("You've guessed correct and scored: "+ score 
-                                + " New credit balance is: " + Player.credits);
-                System.out.println("Try again!");
-            }
-            else //(guess1 != Die.die1 || guess2 != Die.die1)
-            {
-                penalty = bet;
-                Player.credits = Player.credits - penalty;
-                System.out.println("You've guessed wrong!");
-                System.out.println(bet + " has been deducted from your credits."
-                                     + " New credit balance is: " + Player.credits);
-                
-                
-                
-                
-            }
-            
-            turn++;
-            die1Hist.add (Die.die1);
-            die2Hist.add (Die.die2);
-            guess1Hist.add (guess1);
-            guess2Hist.add (guess2);
-            betHist.add (bet);
-            rewardHist.add (reward);
-            penaltyHist.add (penalty);
-            turnsHist.add (turn); 
-            
-            //Prints history for testing
-            System.out.println(die1Hist);
-            System.out.println(die2Hist);
-            System.out.println(guess1Hist);
-            System.out.println(guess2Hist);
-            System.out.println(betHist);
-            System.out.println(rewardHist);
-            System.out.println(penaltyHist);
-            System.out.println(turnsHist);
-            
-        }
-        
-        if (Player.credits == 0)
-        {
-            System.out.println("You lost");
-        }
-        else 
-        {
-            System.out.println("The game ended");    
-        }
-       
-        //-- Code for calculating and displaying Game Statistics + Game History
-        //---------------------------------------------------------------------
-
-        // Game statistic calculations
-        
-        // Summing the total reward sum
-        int rewardSum = 0;
-        
-        for (int i = 0; i < rewardHist.size(); i++) 
-        {
-            rewardSum += rewardHist.get(i);
-        }
-        
-        // Summing the total penalty sum
-        int penaltySum = 0;
-        
-        for (int i = 0; i < penaltyHist.size(); i++)
-        {
-            penaltySum += penaltyHist.get(i);
-        }
-        
-        
-        
-        System.out.println("--Game History--"); 
-// Ex. In game 1 the die values were 4 and 6. 
-//You betted 40.
-//You guessed 5 and 5 
-//Your reward was 150
-//Your penalty was 0
-        
-        
-        int step  = 1;
-        
-        for (int i = 0; i < turn; i++)
-        {
-            System.out.println("In turn: " + step + " you betted: " + betHist.get(i));
-            System.out.println("You guessed: " + die1Hist.get(i)+" and " + die2Hist.get(i));
-            System.out.println("Your reward was: " + rewardHist.get(i) +" and your penalty was: " + penaltyHist.get(i));
-            System.out.println("");
-            step++;
-        }
-
-        System.out.println("-- Game Statistics --");
-        System.out.println("The game lasted: " + turn + " turns.");
-        System.out.println("You won a total of: " + rewardSum);
-        System.out.println("You lost a total of: " + penaltySum);
-        System.out.println("Your final account total is: " + Player.credits);
-    
-       
-        
-        
-        
-     
-        
-            
-    }   
- */      
-
-    
-
-

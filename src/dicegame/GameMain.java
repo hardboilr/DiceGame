@@ -1,7 +1,10 @@
 /*
- * Introduction of game
- * 
- * 
+ * Welcome to the Dice Game!
+ * The game satisfies the specifications of VERSION 1 
+ *------------------------------------------------------
+ * VERSION 2+3+4 functionality has not been implemented. 
+ * -----------------------------------------------------
+ * created by Tobias Jacobsen aka hardboilr
  */
 package dicegame;
 

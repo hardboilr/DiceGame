@@ -1,7 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Class responsible for storing info about the game
+ * 
+ * Created by Tobias Jacobsen aka hardboilr
  */
 package dicegame;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public class GameTurn
     private ArrayList<Integer> faceValue2Hist = new ArrayList<>();
     private ArrayList<Integer> guess1Hist = new ArrayList<>();
     private ArrayList<Integer> guess2Hist = new ArrayList<>();
-    private ArrayList<Integer> betHist = new ArrayList<>();
+    private ArrayList<Double> betHist = new ArrayList<>();
     // kinda redundant because we can derive this number
     // from one of the other lists, but convenient. :-)
     private ArrayList<Integer> turnHist = new ArrayList<>();
@@ -79,13 +79,13 @@ public class GameTurn
     //------------------------------
     // Bet history accessor methods
     //------------------------------
-    public void addBetHistory (int input)
+    public void addBetHistory (double input)
     {
         this.betHist.add (input);
     }
-    public int getBetHistory (int input)
+    public Double getBetHistory (double input)
     {
-        return betHist.get (input);
+        return betHist.get ((int) input);
     }
     
     //--------------------------------

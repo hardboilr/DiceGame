@@ -1,4 +1,8 @@
-
+/*
+* Class containing player, account and scoring rules
+*
+* created by Tobias Jacobsen aka hardboilr
+*/
 package dicegame;
 import java.util.Scanner;
 

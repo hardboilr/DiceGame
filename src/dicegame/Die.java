@@ -1,6 +1,7 @@
 /*
- * Class responsible for rolling 2 x dies
+ * Class responsible for creating a random value
  * 
+ * Created by Tobias Jacobsen aka hardboilr
 */
 package dicegame;
 import java.util.Random; 
